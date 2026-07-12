@@ -1,0 +1,132 @@
+{
+  "assetPackId": "k189-short-ru",
+  "version": "1.0.0",
+  "facts": [
+    {
+      "id": "address",
+      "value": "г. Нальчик, ул. Кабардинская, 189",
+      "display": "Кабардинская, 189",
+      "basis": "documented",
+      "source": "Выписки ЕГРН и фотографии объекта",
+      "confidence": "high",
+      "usage": "short-and-long"
+    },
+    {
+      "id": "marketing_total_area",
+      "value": 1000,
+      "unit": "м²",
+      "display": "1 000 м²",
+      "basis": "marketing-rounded",
+      "source": "Обязательное указание собственницы для версии 2",
+      "confidence": "owner-directed",
+      "usage": "short-and-long",
+      "caution": "Округленный показатель включает основной корпус и кафе; точный состав подтверждается документами сделки."
+    },
+    {
+      "id": "registered_premises_area",
+      "value": 890.1,
+      "unit": "м²",
+      "display": "890,1 м²",
+      "basis": "documented",
+      "source": "Три выписки ЕГРН от 22.05.2024",
+      "confidence": "high-at-extract-date",
+      "usage": "long-only",
+      "caution": "Перед сделкой требуются актуальные выписки."
+    },
+    {
+      "id": "marketing_land_area",
+      "value": 20,
+      "unit": "соток",
+      "display": "20 соток",
+      "basis": "marketing-rounded",
+      "source": "Округление документальной площади земельного участка",
+      "confidence": "high-rounded",
+      "usage": "short-and-long",
+      "caution": "Документальная площадь составляет 1 969 ±16 м²."
+    },
+    {
+      "id": "documented_land_area",
+      "value": 1969,
+      "tolerance": 16,
+      "unit": "м²",
+      "display": "1 969 ±16 м²",
+      "basis": "documented",
+      "source": "Выписка ЕГРН земельного участка от 22.05.2024",
+      "confidence": "high-at-extract-date",
+      "usage": "long-only",
+      "caution": "В выписке указано, что граница участка не установлена в соответствии с требованиями земельного законодательства."
+    },
+    {
+      "id": "floors",
+      "value": 3,
+      "unit": "этажа",
+      "display": "3 этажа",
+      "basis": "documented-and-visible",
+      "source": "Выписки ЕГРН и фотографии объекта",
+      "confidence": "high",
+      "usage": "short-and-long"
+    },
+    {
+      "id": "cafe_area",
+      "value": 125,
+      "unit": "м²",
+      "display": "около 125 м²",
+      "basis": "owner-provided",
+      "source": "Данные собственницы",
+      "confidence": "requires-documentation",
+      "usage": "short-and-long",
+      "caution": "Отдельная выписка и фотографии кафе в предоставленном комплекте отсутствуют."
+    },
+    {
+      "id": "medical_equipment_included",
+      "value": true,
+      "display": "медицинское оборудование входит в предложение",
+      "basis": "owner-provided",
+      "source": "Данные собственницы",
+      "confidence": "requires-inventory-list",
+      "usage": "short-and-long",
+      "caution": "Состав оборудования закрепляется документами сделки."
+    },
+    {
+      "id": "parking",
+      "value": "на территории и вдоль улицы",
+      "display": "парковка на территории и вдоль улицы",
+      "basis": "owner-provided",
+      "source": "Данные собственницы",
+      "confidence": "requires-verification",
+      "usage": "short-and-long"
+    },
+    {
+      "id": "technical_infrastructure",
+      "value": [
+        "собственная электроподстанция",
+        "напряжение 380 В",
+        "резервный генератор",
+        "центральное водоснабжение",
+        "запас воды",
+        "центральная канализация",
+        "газовое отопление",
+        "принудительная вентиляция",
+        "сплит-системы",
+        "оптоволоконный интернет",
+        "пожарные системы и выходы",
+        "видеонаблюдение"
+      ],
+      "basis": "owner-provided",
+      "source": "Данные собственницы",
+      "confidence": "requires-technical-documents",
+      "usage": "short-and-long",
+      "caution": "Технические характеристики подтверждаются документацией и осмотром."
+    },
+    {
+      "id": "egrn_extract_date",
+      "value": "2024-05-22",
+      "display": "22.05.2024",
+      "basis": "documented",
+      "source": "Предоставленные выписки ЕГРН",
+      "confidence": "high-at-extract-date",
+      "usage": "long-only",
+      "caution": "Перед сделкой требуется обновление выписок."
+    }
+  ]
+}

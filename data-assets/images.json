@@ -1,0 +1,23 @@
+{
+  "assetPackId": "k189-short-ru",
+  "version": "1.0.0",
+  "basePathFromTemplate": "../assets/",
+  "images": [
+    {"id":"facade_wide","file":"facade_wide.jpg","alt":"Фасад комплекса K189","role":"cover"},
+    {"id":"facade_sign","file":"facade_sign.jpg","alt":"Фасад и существующая вывеска объекта","role":"summary"},
+    {"id":"facade_hero","file":"facade_hero.jpg","alt":"Отдельно стоящее трехэтажное здание","role":"object"},
+    {"id":"covered_yard","file":"covered_yard.jpg","alt":"Огороженная территория и крытая входная зона","role":"territory"},
+    {"id":"waiting_area","file":"waiting_area.jpg","alt":"Зона ожидания","role":"ready-base"},
+    {"id":"lobby_main","file":"lobby_main.jpg","alt":"Интерьер входной группы","role":"interior-quality"},
+    {"id":"stairs_1","file":"stairs_1.jpg","alt":"Лестница между этажами","role":"floor-structure"},
+    {"id":"physiotherapy_hero","file":"physiotherapy_hero.jpg","alt":"Зал физиотерапии и реабилитации","role":"medical-primary"},
+    {"id":"patient_room","file":"patient_room.jpg","alt":"Палата","role":"medical-secondary"},
+    {"id":"doctor_office","file":"doctor_office.jpg","alt":"Кабинет врача","role":"medical-secondary"},
+    {"id":"clinic_corridor_2","file":"clinic_corridor_2.jpg","alt":"Коридор медицинского этажа","role":"clinic-corridor"},
+    {"id":"office_storage","file":"office_storage.jpg","alt":"Офисное помещение второго этажа","role":"office"},
+    {"id":"hotel_room","file":"hotel_room.jpg","alt":"Гостевой номер третьего этажа","role":"guest-room"},
+    {"id":"hotel_corridor_1","file":"hotel_corridor_1.jpg","alt":"Коридор гостевого этажа","role":"guest-secondary"},
+    {"id":"street_front","file":"street_front.jpg","alt":"Уличный фасад и ограждение","role":"location"},
+    {"id":"main_entrance","file":"main_entrance.jpg","alt":"Главный вход","role":"contact"}
+  ]
+}

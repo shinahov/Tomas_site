@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.k189/short-version.schema.json",
+  "title": "K189 Russian Short Version Data Asset",
+  "type": "object",
+  "required": ["assetPackId", "version", "language", "deck", "branding", "contact", "globalNotes", "sections"],
+  "properties": {
+    "assetPackId": {"const":"k189-short-ru"},
+    "version": {"type":"string"},
+    "language": {"const":"ru"},
+    "deck": {
+      "type":"object",
+      "required":["id","title","format","sectionCount","communicationGoal"],
+      "properties": {
+        "sectionCount":{"const":16}
+      }
+    },
+    "branding":{"type":"object"},
+    "contact":{"type":"object"},
+    "globalNotes":{"type":"array","minItems":1,"items":{"type":"string"}},
+    "sections": {
+      "type":"array",
+      "minItems":16,
+      "maxItems":16,
+      "items": {
+        "type":"object",
+        "required":["id","order","type","eyebrow","title"],
+        "properties": {
+          "id":{"type":"string","minLength":1},
+          "order":{"type":"integer","minimum":1,"maximum":16},
+          "type":{"type":"string","minLength":1},
+          "eyebrow":{"type":"string"},
+          "title":{"type":"string","minLength":1},
+          "body":{"type":"string"},
+          "lead":{"type":"string"},
+          "callout":{"type":"string"},
+          "note":{"type":"string"},
+          "items":{"type":"array"},
+          "metrics":{"type":"array"},
+          "imageIds":{"type":"array","items":{"type":"string"}},
+          "factIds":{"type":"array","items":{"type":"string"}}
+        }
+      }
+    }
+  }
+}
