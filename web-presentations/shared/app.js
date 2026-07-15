@@ -4,7 +4,7 @@
   if (!data || !Array.isArray(data.slides)) throw new Error('Deck data is missing');
 
   const esc = (value = '') => String(value).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-  const img = (src, alt = '') => `<img src="${esc(src)}" alt="${esc(alt)}" loading="${data.slides[0]?.image === src ? 'eager' : 'lazy'}">`;
+  const img = (src, alt = '') => `<img src="${esc(src)}" alt="${esc(alt)}" loading="eager" decoding="async" fetchpriority="${data.slides[0]?.image === src ? 'high' : 'auto'}">`;
   const reveal = (html, cls = '') => `<div class="reveal ${cls}">${html}</div>`;
   const heading = s => `${s.eyebrow ? reveal(esc(s.eyebrow),'eyebrow') : ''}${s.title ? reveal(`<h2 class="title">${esc(s.title)}</h2>`) : ''}${s.body ? reveal(`<p class="body">${esc(s.body)}</p>`) : ''}${s.callout ? reveal(`<div class="callout">${esc(s.callout)}</div>`) : ''}`;
   const metrics = values => values?.length ? `<div class="metrics" style="--metric-count:${values.length}">${values.map(m => `<div class="metric reveal"><div class="metric__value">${esc(m.value)}</div><div class="metric__label">${esc(m.label)}</div></div>`).join('')}</div>` : '';
@@ -16,7 +16,7 @@
 
   function renderSlide(s, i) {
     const classes = ['slide',`layout-${s.layout || 'split'}`,s.theme === 'dark' ? 'theme-dark' : '',s.reverse ? 'reverse':'',s.align === 'right' ? 'align-right':'',s.compactMedia ? 'media-compact':''].filter(Boolean).join(' ');
-    const bg = s.image && ['photo','chapter','contact'].includes(s.layout) ? `<img class="slide__bg" src="${esc(s.image)}" alt="${esc(s.alt || s.title || '')}"><div class="slide__veil"></div>` : '';
+    const bg = s.image && ['photo','chapter','contact'].includes(s.layout) ? `<img class="slide__bg" src="${esc(s.image)}" alt="${esc(s.alt || s.title || '')}" decoding="async"><div class="slide__veil"></div>` : '';
     let content = '';
     if (s.layout === 'cover') {
       const coverTitle = esc(s.title).replace(' &amp; ', ' &amp;<br>');
@@ -60,21 +60,105 @@
   const progress = document.querySelector('.progress span');
   const counter = document.querySelector('.counter');
   const overview = document.querySelector('.overview');
-  let active = 0;
+  const nav = document.querySelector('.deck-nav');
+  const motion = window.Motion;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hasMotion = !reducedMotion && motion && ['animate','inView','scroll'].every(name => typeof motion[name] === 'function');
+  let active = -1;
+  let slideTops = [];
+
   const setActive = index => {
-    active = Math.max(0,Math.min(slides.length-1,index));
+    const next = Math.max(0,Math.min(slides.length-1,index));
+    if (next === active) return;
+    active = next;
     slides.forEach((el,i)=>el.classList.toggle('is-active',i===active));
     counter.textContent = `${String(active+1).padStart(2,'0')} / ${String(slides.length).padStart(2,'0')}`;
-    progress.style.width = `${((active+1)/slides.length)*100}%`;
     document.title = `${data.slides[active].title || 'K189'} — K189`;
   };
+
+  const measureSlides = () => {
+    slideTops = slides.map(slide => slide.getBoundingClientRect().top + window.scrollY);
+  };
+
+  const activeIndexAtScroll = scrollY => {
+    const navHeight = nav?.offsetHeight || 0;
+    const anchor = scrollY + navHeight + Math.max(0,window.innerHeight-navHeight) * .36;
+    let low = 0;
+    let high = slideTops.length-1;
+    let result = 0;
+    while (low <= high) {
+      const middle = (low+high) >> 1;
+      if (slideTops[middle] <= anchor) {
+        result = middle;
+        low = middle+1;
+      } else {
+        high = middle-1;
+      }
+    }
+    return result;
+  };
+
+  const syncScrollState = (ratio,scrollY = window.scrollY) => {
+    progress.style.transform = `scaleX(${ratio})`;
+    setActive(activeIndexAtScroll(scrollY));
+  };
+
+  const syncCurrentScroll = () => {
+    const maxScroll = Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+    syncScrollState(Math.max(0,Math.min(1,window.scrollY/maxScroll)));
+  };
+
+  const revealElements = [...document.querySelectorAll('.reveal')];
+  const revealSlide = slide => {
+    if (slide.dataset.revealed === 'true') return;
+    slide.dataset.revealed = 'true';
+    const elements = [...slide.querySelectorAll('.reveal')];
+    elements.forEach(element => element.classList.add('is-revealed'));
+    if (!hasMotion) return;
+    elements.forEach((element,index) => {
+      motion.animate(element,
+        {opacity:[0,1],y:[18,0]},
+        {duration:.5,delay:Math.min(index,4)*.055,ease:[.22,.78,.24,1]}
+      );
+    });
+  };
+
+  if (!hasMotion) {
+    document.documentElement.dataset.motion = 'fallback';
+    revealElements.forEach(element => element.classList.add('is-revealed'));
+  } else {
+    document.documentElement.dataset.motion = 'motion';
+    document.body.classList.add('motion-powered');
+    const navHeight = nav?.offsetHeight || 0;
+    slides.forEach(slide => {
+      const rect = slide.getBoundingClientRect();
+      if (rect.top < window.innerHeight*.94 && rect.bottom > navHeight) revealSlide(slide);
+    });
+    const unrevealedSlides = slides.filter(slide => slide.dataset.revealed !== 'true');
+    if (unrevealedSlides.length) motion.inView(unrevealedSlides,revealSlide,{amount:.04,margin:'0px'});
+  }
+
   const go = index => slides[Math.max(0,Math.min(slides.length-1,index))].scrollIntoView({behavior:'smooth'});
-  const observer = new IntersectionObserver(entries => {
-    const visible = entries.filter(entry => entry.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio);
-    if (visible[0]) setActive(slides.indexOf(visible[0].target));
-  },{threshold:[0,.08,.2,.4,.6]});
-  slides.forEach(s=>observer.observe(s));
-  setActive(0);
+  measureSlides();
+  if (hasMotion) {
+    motion.scroll((ratio,info) => syncScrollState(ratio,info.y.current),{trackContentSize:true});
+  } else {
+    let fallbackFrame = 0;
+    window.addEventListener('scroll',() => {
+      if (fallbackFrame) return;
+      fallbackFrame = requestAnimationFrame(() => {
+        fallbackFrame = 0;
+        syncCurrentScroll();
+      });
+    },{passive:true});
+  }
+  const refreshLayout = () => {
+    measureSlides();
+    syncCurrentScroll();
+  };
+  window.addEventListener('resize',refreshLayout,{passive:true});
+  window.addEventListener('load',refreshLayout,{once:true});
+  syncCurrentScroll();
 
   document.querySelector('.prev').addEventListener('click',()=>go(active-1));
   document.querySelector('.next').addEventListener('click',()=>go(active+1));
