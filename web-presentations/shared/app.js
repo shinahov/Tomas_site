@@ -16,10 +16,11 @@
 
   function renderSlide(s, i) {
     const classes = ['slide',`layout-${s.layout || 'split'}`,s.theme === 'dark' ? 'theme-dark' : '',s.reverse ? 'reverse':'',s.align === 'right' ? 'align-right':'',s.compactMedia ? 'media-compact':''].filter(Boolean).join(' ');
-    const bg = s.image && ['cover','photo','chapter','contact'].includes(s.layout) ? `<img class="slide__bg" src="${esc(s.image)}" alt="${esc(s.alt || s.title || '')}"><div class="slide__veil"></div>` : '';
+    const bg = s.image && ['photo','chapter','contact'].includes(s.layout) ? `<img class="slide__bg" src="${esc(s.image)}" alt="${esc(s.alt || s.title || '')}"><div class="slide__veil"></div>` : '';
     let content = '';
     if (s.layout === 'cover') {
-      content = `<div class="cover-tag">${esc(s.tag || data.label)}</div>${reveal(`<div class="brand">K189</div>`)}${reveal(`<h1 class="cover-title">${esc(s.title)}</h1>`)}${s.body ? reveal(`<p class="cover-subtitle">${esc(s.body)}</p>`) : ''}${s.opportunity ? reveal(`<div class="cover-opportunity">${esc(s.opportunity)}</div>`) : ''}${metrics(s.metrics)}${s.location ? `<div class="location reveal">${esc(s.location)}</div>`:''}`;
+      const coverTitle = esc(s.title).replace(' &amp; ', ' &amp;<br>');
+      content = `<div class="cover-copy"><div class="cover-tag">${esc(s.tag || data.label)}</div>${reveal(`<div class="brand">K189</div>`)}${reveal(`<h1 class="cover-title">${coverTitle}</h1>`)}${s.body ? reveal(`<p class="cover-subtitle">${esc(s.body)}</p>`) : ''}</div><figure class="cover-media reveal">${img(s.image,s.alt || 'Фасад комплекса K189')}${s.location ? `<figcaption>${esc(s.location)}</figcaption>`:''}</figure>${metrics(s.metrics)}`;
     } else if (s.layout === 'split') {
       content = `<div class="slide__copy">${heading(s)}${items(s.items)}${metrics(s.metrics)}</div><div class="media-frame reveal">${img(s.image,s.alt || s.title)}</div>`;
     } else if (s.layout === 'photo' || s.layout === 'chapter') {
@@ -51,8 +52,8 @@
       <div class="nav-actions"><span class="counter">01 / ${String(data.slides.length).padStart(2,'0')}</span><button class="icon-btn overview-open" aria-label="Открыть обзор">☷</button><button class="icon-btn fullscreen" aria-label="Полный экран">⛶</button></div>
     </nav>
     <main class="deck-shell">${data.slides.map(renderSlide).join('')}</main>
-    <div class="deck-arrows"><button class="icon-btn prev" aria-label="Предыдущий экран">↑</button><button class="icon-btn next" aria-label="Следующий экран">↓</button></div>
-    <aside class="overview" aria-hidden="true"><div class="overview__head"><h2>Все экраны</h2><button class="icon-btn overview-close" aria-label="Закрыть обзор">×</button></div><div class="overview__grid">${data.slides.map((s,i)=>`<button class="overview-card" data-go="${i}"><span>${String(i+1).padStart(2,'0')}</span><strong>${esc(s.title || 'K189')}</strong></button>`).join('')}</div></aside>
+    <div class="deck-arrows"><button class="icon-btn prev" aria-label="Предыдущая страница">↑</button><button class="icon-btn next" aria-label="Следующая страница">↓</button></div>
+    <aside class="overview" aria-hidden="true"><div class="overview__head"><h2>Все страницы</h2><button class="icon-btn overview-close" aria-label="Закрыть обзор">×</button></div><div class="overview__grid">${data.slides.map((s,i)=>`<button class="overview-card" data-go="${i}"><span>${String(i+1).padStart(2,'0')}</span><strong>${esc(s.title || 'K189')}</strong></button>`).join('')}</div></aside>
   `);
 
   const slides = [...document.querySelectorAll('.slide')];
@@ -68,7 +69,10 @@
     document.title = `${data.slides[active].title || 'K189'} — K189`;
   };
   const go = index => slides[Math.max(0,Math.min(slides.length-1,index))].scrollIntoView({behavior:'smooth'});
-  const observer = new IntersectionObserver(entries => entries.forEach(entry => { if(entry.isIntersecting) setActive(slides.indexOf(entry.target)); }),{threshold:.58});
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries.filter(entry => entry.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio);
+    if (visible[0]) setActive(slides.indexOf(visible[0].target));
+  },{threshold:[0,.08,.2,.4,.6]});
   slides.forEach(s=>observer.observe(s));
   setActive(0);
 
