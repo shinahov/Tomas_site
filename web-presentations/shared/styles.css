@@ -133,8 +133,8 @@ button { color: inherit; }
 .icon-btn { width:36px; height:36px; border:1px solid #ffffff55; background:transparent; border-radius:50%; display:grid; place-items:center; cursor:pointer; transition:.2s ease; }
 .icon-btn:hover { background:white; color:black; }
 .counter { min-width:68px; font-size:11px; text-align:center; letter-spacing:.12em; }
-.progress { position:fixed; z-index:101; top:0; left:0; height:2px; width:100%; background:#ffffff22; }
-.progress span { display:block; width:0; height:100%; background:var(--brass); transition:width .35s var(--ease); }
+.progress { position:fixed; z-index:101; top:0; left:0; height:3px; width:100%; background:#ffffff22; }
+.progress span { display:block; width:100%; height:100%; background:var(--brass); transform:scaleX(0); transform-origin:left center; transition:none; will-change:transform; }
 .deck-arrows { position:fixed; z-index:100; right:18px; bottom:18px; display:flex; gap:8px; }
 .deck-arrows .icon-btn { background:#081720bb; color:#fff; border-color:#b28b5277; backdrop-filter:blur(8px); }
 
@@ -148,9 +148,9 @@ button { color: inherit; }
 .overview-card span { color:var(--brass); font:700 11px/1 Georgia,serif; }
 .overview-card strong { display:block; margin-top:22px; font:400 20px/1.15 Georgia,serif; }
 
-.reveal { opacity:0; transform:translateY(22px); transition:opacity .7s var(--ease),transform .7s var(--ease); }
-.is-active .reveal { opacity:1; transform:none; }
-.is-active .reveal:nth-child(2){transition-delay:.08s}.is-active .reveal:nth-child(3){transition-delay:.16s}.is-active .reveal:nth-child(4){transition-delay:.24s}
+.reveal { opacity:1; transform:none; }
+.motion-powered .reveal:not(.is-revealed) { opacity:0; transform:translateY(18px); will-change:opacity,transform; }
+.motion-powered .reveal.is-revealed { opacity:1; transform:none; }
 
 @media (max-width: 840px) {
   html { scroll-snap-type:y proximity; }
@@ -192,7 +192,7 @@ button { color: inherit; }
   .reveal { opacity:1!important; transform:none!important; }
 }
 
-@media (prefers-reduced-motion: reduce) { html{scroll-behavior:auto}.reveal,.media-frame img,.progress span{transition:none!important}.reveal{opacity:1;transform:none} }
+@media (prefers-reduced-motion: reduce) { html{scroll-behavior:auto}.reveal,.media-frame img,.progress span{transition:none!important}.reveal{opacity:1!important;transform:none!important} }
 
 /* Final Design 4 catalogue treatment: ivory sheets on a stone presentation board. */
 @media screen {
@@ -200,11 +200,14 @@ button { color: inherit; }
   body { background: #c9c5be; }
   .deck-shell { width: min(1500px,94vw); margin: 0 auto; padding: 28px 0 64px; display: grid; grid-template-columns: minmax(0,1fr); gap: 28px; }
   .slide { min-height: clamp(680px,82vh,860px); width: 100%; scroll-snap-align: none; scroll-snap-stop: normal; background: var(--paper); box-shadow: 0 20px 55px #00000025; }
+  .slide.theme-dark { color: #fff; background: var(--ink); }
   .slide__inner { min-height: clamp(680px,82vh,860px); width: 100%; padding: clamp(52px,6vw,90px); }
   .layout-cover, .layout-gallery, .layout-contact, .layout-chapter, .layout-statement, .layout-document { grid-column: 1; }
-  .reveal { opacity: 1!important; transform: none!important; transition: none!important; }
   .slide:not(.theme-dark) .title, .slide:not(.theme-dark) .item__title, .slide:not(.theme-dark) .role__title { color: #202426; }
-  .slide:not(.theme-dark) .body, .slide:not(.theme-dark) .item__desc, .slide:not(.theme-dark) .role__desc { color: #555754; }
+  .slide:not(.theme-dark) .body, .slide:not(.theme-dark) .item__desc, .slide:not(.theme-dark) .role__desc { color: #484c4b; }
+  .slide.theme-dark .title, .slide.theme-dark .item__title, .slide.theme-dark .role__title, .slide.theme-dark .callout { color: #fff; }
+  .slide.theme-dark .body, .slide.theme-dark .item__desc, .slide.theme-dark .role__desc { color: #dedbd5; }
+  .slide.theme-dark .item { border-bottom-color: #d1b37e55; }
 
   .deck-nav { position: sticky; height: 68px; padding: 0 clamp(20px,4vw,64px); color: white; background: #081720f5; border-bottom: 1px solid #b28b5255; mix-blend-mode: normal; backdrop-filter: blur(14px); }
   .nav-brand { color: var(--brass); }
